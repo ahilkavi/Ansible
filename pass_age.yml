@@ -1,0 +1,15 @@
+---
+  - hosts: syslogclient
+    become: true
+    tasks:
+     - name: user create
+       user:
+        name: che
+        state: present
+  
+     - name: disable account expire and set password aging to max...
+       shell:
+        chage -m 0 -M 99999 -I -1 -E -1 che
+  
+       
+

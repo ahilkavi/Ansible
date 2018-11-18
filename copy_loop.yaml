@@ -1,0 +1,13 @@
+---
+  - hosts: Test
+    become: true
+    tasks:
+     - name: copying  log files
+       copy:
+         src: "{{ item.X }}"
+         dest: "{{ item.Y }}"
+         mode: "{{item.Z}}"
+#         remote_src: yes
+       with_items:
+         - {X: '/root/1',Y: '/root/server_passwd',Z: '0644'}
+         - {X: '/root/2',Y: '/root/server_shadow',Z: '0644'}

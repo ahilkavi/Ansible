@@ -1,0 +1,16 @@
+---
+- name: Run the command only on localhost
+  hosts: 127.0.0.1
+  connection: local
+  tasks:
+    - name: Getting disk details
+      shell: /usr/bin/ansible -m shell -a "fdisk -l | grep /dev/sd" -i /etc/ansible/hosts Test -b --become-user=root >  /root/disk.info
+    - name: Changing permission and owner of remote dir
+      shell: /usr/bin/ansible -m shell -a "chown root:svcansible -R /var/www/html/ && chmod 775 -R /var/www/html/" -i /etc/ansible/hosts quipucordserver -b --become-user=root
+    - name: changing permission and owners
+      file:
+         path: /root/disk.info
+         mode: 0644
+         owner: root
+    - name: copy diskinfo file to repo server
+      shell: /usr/bin/scp -i /home/svcansible/.ssh/id_rsa  /root/disk.info svcansible@quipucordserver:/var/www/html/

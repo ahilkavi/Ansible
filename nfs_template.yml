@@ -1,0 +1,11 @@
+---
+ - hosts: Test
+   become: true
+   tasks:
+     - name: Install nfs server
+       package: name=nfs-utils state=present
+     - name: Install logratate
+       package: name=logrotate state=present
+
+     - name:  creting  nfs configure file 
+       template: src=nfs.j2 dest=/etc/exports

@@ -1,0 +1,23 @@
+---
+- hosts: Test
+  remote_user: svcansible
+  become: true
+  become_method: sudo
+  tasks:
+  - name: Create directory for jboss logs
+    file:
+      path: "{{ item.dest }}"
+      mode: "{{item.mode}}"
+      state: directory
+    with_items:
+      - { dest: '/apps/c360', mode: '0775'}
+      - { dest: '/apps/c360/logs/jboss/log', mode: '0775'}
+  - name: copying  log files
+    copy:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: "{{item.mode}}"
+      remote_src: yes
+    with_items:
+      - {src: '/var/log/jbossas/standalone/console.log',dest: '/apps/c360/logs/jboss/log',mode: '0644'}
+      - {src: '/var/log/jbossas/standalone/server.log',dest: '/apps/c360/logs/jboss/log',mode: '0644'}

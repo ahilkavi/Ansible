@@ -1,0 +1,15 @@
+/apps/c360/logs/httpd/log/error_log
+/apps/c360/logs/httpd/log/access_log
+/apps/c360/logs/httpd/log/ssl_access_log
+/apps/c360/logs/httpd/log/ssl_error_log
+/apps/c360/logs/httpd/log/ssl_request_log
+{
+  daily
+  weekly
+  size 25M
+  rotate 7
+  missingok
+  compress
+  delaycompress
+  copytruncate
+  }

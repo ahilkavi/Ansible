@@ -1,0 +1,30 @@
+---
+ - hosts: Test
+   become: true
+   become_method: sudo
+   become_user: root
+   tasks: 
+   
+    - name: installing httpd
+      yum: name=httpd state=installed
+
+    - name: copy index file from ansible server
+      copy: src=/root/index.html dest=/var/www/html/ mode=644
+
+    - name: create new document root Test
+      file: dest=/var/www/html/TestNew state=directory mode=0755
+
+    - name: copy index file to new document root
+      copy: src=/root/index1.html dest=/var/www/html/TestNew/index.html mode=644
+ 
+    - name: start http 
+      service: name=httpd  state=started  enabled=yes
+
+    - name:  making  changes in  httpd config file 
+      lineinfile:  regexp='^DocumentRoot\s' line='DocumentRoot "/var/www/html/TestNew"'  dest=/etc/httpd/conf/httpd.conf 
+      notify:
+       - got_changes
+
+   handlers:
+    - name: got_changes
+      service: name=httpd  state=restarted 

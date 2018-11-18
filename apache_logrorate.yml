@@ -1,0 +1,35 @@
+---
+- hosts: [Test]
+  remote_user: svcansible
+  become: true
+  become_method: sudo
+  ignore_errors: yes
+  tasks:
+  - name: Create directory for jboss logs
+    file:
+      path: "{{ item.dest }}"
+      mode: "{{item.mode}}"
+      state: directory
+    with_items:
+      - { dest: '/apps/c360', mode: '0775'}
+      - { dest: '/apps/c360/logs/httpd/log', mode: '0775'}
+  - name: copying  log files
+    copy:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: "{{item.mode}}"
+      remote_src: yes
+    with_items:
+     - {src: '/var/log/httpd/error_log',dest: '/apps/c360/logs/httpd/log',mode: '0644'}
+     - {src: '/var/log/httpd/access_log',dest: '/apps/c360/logs/httpd/log',mode: '0644'}
+     - {src: '/var/log/httpd/ssl_access_log',dest: '/apps/c360/logs/httpd/log',mode: '0644'}
+     - {src: '/var/log/httpd/ssl_error_log',dest: '/apps/c360/logs/httpd/log',mode: '0644'}
+     - {src: '/var/log/httpd/ssl_request_log',dest: '/apps/c360/logs/httpd/log',mode: '0644'}
+
+  - name: Installing logrotate pkg
+    package: name=logrotate state=present
+    register: log_out
+  
+  - name: Create logrotate for apache
+    copy: src=/etc/ansible/roles/files/httpd dest=/etc/logrotate.d/ mode=0644
+    when: log_out.rc == 0

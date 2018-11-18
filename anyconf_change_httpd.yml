@@ -1,0 +1,18 @@
+---
+ - hosts: Test
+   become: true
+   become_method: sudo
+   become_user: root
+   tasks: 
+   
+    - name: installing httpd
+      yum: name=httpd state=installed
+
+    - name:  copying httpd config file to Nodes 
+      copy: src=/root/httpd.conf dest=/etc/httpd/conf/httpd.conf mode=644 owner=root 
+      notify:
+       - got_changes
+
+   handlers:
+    - name: got_changes
+      service: name=httpd  state=restarted 

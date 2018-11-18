@@ -1,0 +1,29 @@
+---
+- hosts: Test
+  become: true
+  become_method: sudo
+  become_user: root
+
+  tasks:
+       - name: Create a new primary partition for LVM
+         parted:
+               device: /dev/sdb
+               number: 1
+               flags: [ lvm ]
+               state: present
+
+       - name: Read device information (always use unit when probing)
+         parted: device=/dev/sdb unit=MiB
+
+
+       - name: Create or resize a volume group rhel.
+         lvg:
+               vg: rhel
+               pvs: /dev/sdb1
+
+       - name: Extend a logical volume.
+         lvol:
+               vg: rhel
+               lv: varloglv
+               size: 4g
+               resizefs: true

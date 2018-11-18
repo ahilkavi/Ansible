@@ -1,0 +1,22 @@
+---
+#This task is to create svcansible user
+#
+- hosts: Test
+  tasks:
+    - name: Add the user 'svcansible'
+      user:
+        name: svcansible
+        comment: ansible local user
+        state: present
+
+    - name: ssh key push
+      authorized_key:
+              user: svcansible
+              state: present
+              key: "{{ lookup('file', '/home/svcansible/.ssh/id_rsa.pub') }}"
+    - name: Allow passwordless sudo
+      lineinfile:
+              dest: /etc/sudoers
+              state: present
+              regexp: '^%wheel\s'
+              line: '%wheel,svcansible           ALL=(ALL) NOPASSWD: ALL'

@@ -1,0 +1,10 @@
+---
+
+- hosts: Test
+  become: true
+  become_method: sudo
+  become_user: root
+
+  tasks: 
+   - name: copy httpd config file from client to ansible server
+     fetch: src=/etc/httpd/conf/httpd.conf dest=/root/ flat=yes 

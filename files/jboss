@@ -1,0 +1,12 @@
+/apps/c360/logs/jboss/log/server.log
+/apps/c360/logs/jboss/log/console.log
+{
+  daily
+  weekly
+  size 25M
+  rotate 7
+  missingok
+  compress
+  delaycompress
+  copytruncate
+  }

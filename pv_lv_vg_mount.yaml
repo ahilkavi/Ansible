@@ -1,0 +1,26 @@
+---
+- hosts: Test
+  become: true
+  become_method: sudo
+  become_user: root
+
+  tasks:
+     - name: vgcreate
+       lvg:
+             vg: datavg
+             pvs: /dev/sda5
+     - name: lvcreate
+       lvol:
+             vg: datavg
+             lv: datalv
+             size: 100%PVS
+     - name: create file system	
+       filesystem:
+             fstype: ext4
+             dev: /dev/datavg/datalv
+     - name: mount logical volume and add fstab 
+       mount:
+             name: /app
+             src: /dev/datavg/datalv
+             fstype: ext4
+             state: mounted
